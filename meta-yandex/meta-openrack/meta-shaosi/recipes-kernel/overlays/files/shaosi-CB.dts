@@ -41,7 +41,7 @@
 			pinctrl-names = "default";
 			pinctrl-0 = <&pinctrl_rgmii2_default &pinctrl_mdio2_default>;
 
-			phy-mode = "gmii";
+			phy-mode = "rmii";
 
 			fixed-link {
 				speed = <1000>;
@@ -99,7 +99,7 @@
 						port8@8 {
 							reg = <8>;
 							label = "cpu";
-							phy-mode = "gmii";
+							phy-mode = "rmii";
 							ethernet = <&mac1>;
 							fixed-link {
 								speed = <1000>;
