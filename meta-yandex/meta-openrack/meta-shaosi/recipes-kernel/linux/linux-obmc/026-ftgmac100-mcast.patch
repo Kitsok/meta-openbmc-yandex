@@ -1,0 +1,140 @@
+diff --git a/drivers/net/ethernet/faraday/ftgmac100.c b/drivers/net/ethernet/faraday/ftgmac100.c
+index 93f8699..2909db7 100644
+--- a/drivers/net/ethernet/faraday/ftgmac100.c
++++ b/drivers/net/ethernet/faraday/ftgmac100.c
+@@ -26,6 +26,7 @@
+ #include <linux/ethtool.h>
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
++#include <linux/crc32.h>
+ #include <linux/module.h>
+ #include <linux/netdevice.h>
+ #include <linux/phy.h>
+@@ -40,10 +41,10 @@
+ #define DRV_NAME	"ftgmac100"
+ #define DRV_VERSION	"0.7"
+ 
+-#define RX_QUEUE_ENTRIES	256	/* must be power of 2 */
++#define RX_QUEUE_ENTRIES	512	/* must be power of 2 */
+ #define TX_QUEUE_ENTRIES	512	/* must be power of 2 */
+ 
+-#define MAX_PKT_SIZE		1518
++#define MAX_PKT_SIZE		1536
+ #define RX_BUF_SIZE		PAGE_SIZE	/* must be smaller than 0x3fff */
+ 
+ /******************************************************************************
+@@ -86,6 +87,8 @@ struct ftgmac100 {
+ 
+ 	uint32_t rxdes0_edorr_mask;
+ 	uint32_t txdes0_edotr_mask;
++	uint32_t maht0;
++	uint32_t maht1;
+ };
+ 
+ static int ftgmac100_alloc_rx_page(struct ftgmac100 *priv,
+@@ -210,18 +213,22 @@ static void ftgmac100_init_hw(struct ftgmac100 *priv)
+ 
+ 	iowrite32(FTGMAC100_APTC_RXPOLL_CNT(1), priv->base + FTGMAC100_OFFSET_APTC);
+ 
++	/* Write multicast filter */
++	iowrite32(priv->maht0, priv->base + FTGMAC100_OFFSET_MAHT0);
++	iowrite32(priv->maht1, priv->base + FTGMAC100_OFFSET_MAHT1);
++
+ 	ftgmac100_set_mac(priv, priv->netdev->dev_addr);
+ }
+ 
+ #define MACCR_ENABLE_ALL	(FTGMAC100_MACCR_TXDMA_EN	| \
+-				 FTGMAC100_MACCR_RXDMA_EN	| \
+-				 FTGMAC100_MACCR_TXMAC_EN	| \
+-				 FTGMAC100_MACCR_RXMAC_EN	| \
+-				 FTGMAC100_MACCR_FULLDUP	| \
+-				 FTGMAC100_MACCR_CRC_APD	| \
+-				 FTGMAC100_MACCR_PHY_LINK_LEVEL | \
+-				 FTGMAC100_MACCR_RX_RUNT	| \
+-				 FTGMAC100_MACCR_RX_BROADPKT)
++				FTGMAC100_MACCR_RXDMA_EN	| \
++				FTGMAC100_MACCR_TXMAC_EN	| \
++				FTGMAC100_MACCR_RXMAC_EN	| \
++				FTGMAC100_MACCR_FULLDUP	| \
++				FTGMAC100_MACCR_CRC_APD	| \
++				FTGMAC100_MACCR_PHY_LINK_LEVEL | \
++				FTGMAC100_MACCR_RX_RUNT	| \
++				FTGMAC100_MACCR_RX_BROADPKT)
+ 
+ static void ftgmac100_start_hw(struct ftgmac100 *priv, int speed)
+ {
+@@ -1266,6 +1273,57 @@ static int ftgmac100_do_ioctl(struct net_device *netdev, struct ifreq *ifr, int
+ 	return phy_mii_ioctl(netdev->phydev, ifr, cmd);
+ }
+ 
++static void ftgmac100_calc_mc_hash(struct ftgmac100 *priv)
++{
++	struct netdev_hw_addr *ha;
++	u32 crc_val;
++
++	priv->maht1 = 0;
++	priv->maht0 = 0;
++	netdev_for_each_mc_addr(ha, priv->netdev) {
++		crc_val = ether_crc_le(ETH_ALEN, ha->addr);
++
++		crc_val = (~(crc_val >> 2)) & 0x3f;
++		if (crc_val >= 32)
++			priv->maht1 |= 1ul << (crc_val - 32);
++		else
++			priv->maht0 |= 1ul << (crc_val);
++	}
++}
++
++static void ftgmac100_set_rx_mode(struct net_device *netdev)
++{
++	struct ftgmac100 *priv = netdev_priv(netdev);
++
++	/* Setup the hash filter */
++	ftgmac100_calc_mc_hash(priv);
++
++	/* Interface down ? that's all there is to do */
++	if (!netif_running(netdev))
++		return;
++
++	u32 maccr = ioread32(priv->base + FTGMAC100_OFFSET_MACCR);
++
++	/* Update the HW */
++	iowrite32(priv->maht0, priv->base + FTGMAC100_OFFSET_MAHT0);
++	iowrite32(priv->maht1, priv->base + FTGMAC100_OFFSET_MAHT1);
++
++	if (priv->netdev->flags & IFF_PROMISC)
++		maccr |= FTGMAC100_MACCR_RX_ALL;
++	else
++		maccr &= ~FTGMAC100_MACCR_RX_ALL;
++
++	if (priv->netdev->flags & IFF_ALLMULTI)
++		maccr |= FTGMAC100_MACCR_RX_MULTIPKT;
++	else if (netdev_mc_count(priv->netdev)) {
++		maccr |= FTGMAC100_MACCR_HT_MULTI_EN;
++		maccr &= ~FTGMAC100_MACCR_RX_MULTIPKT;
++		}
++
++	/* Reconfigure MACCR */
++	iowrite32(maccr, priv->base + FTGMAC100_OFFSET_MACCR);
++}
++
+ static const struct net_device_ops ftgmac100_netdev_ops = {
+ 	.ndo_open		= ftgmac100_open,
+ 	.ndo_stop		= ftgmac100_stop,
+@@ -1273,6 +1331,7 @@ static const struct net_device_ops ftgmac100_netdev_ops = {
+ 	.ndo_set_mac_address	= ftgmac100_set_mac_addr,
+ 	.ndo_validate_addr	= eth_validate_addr,
+ 	.ndo_do_ioctl		= ftgmac100_do_ioctl,
++	.ndo_set_rx_mode	= ftgmac100_set_rx_mode,
+ };
+ 
+ static int ftgmac100_setup_mdio(struct net_device *netdev)
+@@ -1307,7 +1366,7 @@ static int ftgmac100_setup_mdio(struct net_device *netdev)
+ 	np = of_get_child_by_name(priv->pdev->dev.of_node, "mdio");
+ 	if (np) {
+ 		/* try dt phy registration */
+-		printk("STARAT\n");
++		printk("START\n");
+ 		err = of_mdiobus_register(priv->mii_bus, np);
+ 
+ 		/* fallback to standard phy registration if no phy were

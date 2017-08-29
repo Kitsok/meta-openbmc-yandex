@@ -28,7 +28,8 @@ SRC_URI += "file://021-i2c-driver-order.patch"
 SRC_URI += "file://022-ftgmac100-sw-reset.patch"
 SRC_URI += "file://023-crypto-hace.patch"
 SRC_URI += "file://024-slave-i2c-16bit.patch"
-SRC_URI += "file://025-ftgmac100-allmulti.patch"
+# SRC_URI += "file://025-ftgmac100-allmulti.patch"
+SRC_URI += "file://026-ftgmac100-mcast.patch"
 
 
 SRC_URI += "file://080-b53-pvlan-hack.patch"
