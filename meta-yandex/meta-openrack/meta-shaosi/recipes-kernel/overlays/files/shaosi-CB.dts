@@ -270,6 +270,30 @@
 				compatible = "atmel,24c02";
 				reg = <0x3b>;
 			};
+			cb1-eeprom {
+				compatible = "atmel,24c02";
+				reg = <0x32>;
+			};
+			cb2-eeprom {
+				compatible = "atmel,24c02";
+				reg = <0x33>;
+			};
+			cb3-eeprom {
+				compatible = "atmel,24c02";
+				reg = <0x34>;
+			};
+			cb4-eeprom {
+				compatible = "atmel,24c02";
+				reg = <0x35>;
+			};
+			cb5-eeprom {
+				compatible = "atmel,24c02";
+				reg = <0x36>;
+			};
+			cb6-eeprom {
+				compatible = "atmel,24c02";
+				reg = <0x37>;
+			};
 		};
 	};
 };
