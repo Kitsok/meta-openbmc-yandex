@@ -1,0 +1,6 @@
+#!/bin/bash
+
+dd if=/dev/zero of=/sys/bus/i2c/devices/7-0056/eeprom bs=1 count=256
+dd if=/dev/zero of=/sys/bus/i2c/devices/7-0056/eeprom bs=1 count=256 seek=16384
+
+

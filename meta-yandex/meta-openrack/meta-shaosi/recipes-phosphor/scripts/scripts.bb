@@ -15,6 +15,7 @@ SRC_URI += "file://getver"
 SRC_URI += "file://pidrst"
 SRC_URI += "file://shaosidrst"
 SRC_URI += "file://checkmacs"
+SRC_URI += "file://reset_eep"
 
 S = "${WORKDIR}"
 
@@ -33,10 +34,11 @@ do_install () {
     install -m 0755 ${WORKDIR}/pidrst ${D}${sbindir}/
     install -m 0755 ${WORKDIR}/shaosidrst ${D}${sbindir}/
     install -m 0755 ${WORKDIR}/checkmacs ${D}${sbindir}/
+    install -m 0755 ${WORKDIR}/reset_eep ${D}${sbindir}/
 }
 
 FILES_${PN} = "${sbindir}/setmacs.sh ${sbindir}/reset_cb.sh ${sbindir}/reset_bmc.sh \
 		${sbindir}/coolingrst ${sbindir}/getapi ${sbindir}/getpwm \
 		${sbindir}/getver ${sbindir}/pidrst ${sbindir}/shaosidrst \
-		${sbindir}/checkmacs"
+		${sbindir}/checkmacs ${sbindir}/reset_eep"
 
