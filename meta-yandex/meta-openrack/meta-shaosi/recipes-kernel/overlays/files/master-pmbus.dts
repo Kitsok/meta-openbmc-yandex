@@ -17,6 +17,11 @@
 				#gpio-cells = <2>;
 				reg = <0x18>;
 				lines-initial-states = <0x1>;
+				ngpios = <16>;
+				gpio-line-names = "RST_I2C", "PS_ON", "PS_OK", "PS_PRSN", "PS_ALERT",
+						"RST_RMCA", "RST_RMCB", "NC_0_7", "RST_CB1", "RST_CB2",
+						"RST_CB3", "RST_CB4", "RST_CB5", "RST_CB6",
+						"NC_1_6", "NC_1_7";
 			};
 
 			psumux@70 {
