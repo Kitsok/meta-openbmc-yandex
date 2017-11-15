@@ -108,7 +108,7 @@ ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 
 PREFIXPREFIX::4ead:a  rmc-a
-PREFIXPREFIX::4ead:b  rmc-a
+PREFIXPREFIX::4ead:b  rmc-b
 
 PREFIXPREFIX::cb:1    cb-1
 PREFIXPREFIX::cb:2    cb-2
