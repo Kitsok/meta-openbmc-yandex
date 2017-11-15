@@ -6,7 +6,6 @@ LICENSE = "Apache-2.0"
 
 LIC_FILES_CHKSUM = "file://LICENSE;md5=c9d0cd0a1fddeb5c3cecce737c04d872"
 
-#SRC_URI = "file://nixio-${PV}.tar.gz"
 SRC_URI = "file://nixio-0.1"
 
 S = "${WORKDIR}/nixio-${PV}"
