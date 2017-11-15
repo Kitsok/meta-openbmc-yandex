@@ -3,6 +3,7 @@ local nixio = require 'nixio'
 local bit = require 'bit'
 -- local sensors = require 'sensors'
 local uloop = require 'uloop'
+uloop.init()
 local ipmi = require 'ipmi'
 local bin = require 'struct'
 local cjson = require 'cjson'
@@ -66,7 +67,6 @@ for line in f:lines() do
 end
 f:close()
 
-uloop.init()
 
 -- Setup db_resty
 local db_resty = nixio.socket('unix', 'stream')
