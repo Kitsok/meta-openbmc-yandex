@@ -61,11 +61,12 @@ end
 local serial='UNKNOWN'
 local serialfile = '/tmp/board-serial'
 local f = io.open(serialfile)
-if not f then return serial end
-for line in f:lines() do
-    serial = line
+if f ~= nil then
+    for line in f:lines() do
+        serial = line
+    end
+    f:close()
 end
-f:close()
 
 
 -- Setup db_resty
