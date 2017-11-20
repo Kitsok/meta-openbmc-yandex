@@ -68,6 +68,40 @@ if f ~= nil then
     f:close()
 end
 
+-- Uptime class
+local function uptime()
+
+    local self = {
+        u, i, l = 0, 0, 0
+    }
+
+    function self.get_value()
+        -- Read current values, calculate dT (from uptime) and dIdle, calculate percentage, update the stored values
+        -- print("get_value: ", self.u, self.i, self.l)
+        local fd =io.open('/proc/uptime')
+        local u, i = fd:read("*n","*n")
+        fd:close()
+        u, i = tonumber(u), tonumber(i)
+        local d_idle = i - self.i
+        local dT = u - self.u
+        self.u = u
+        self.i = i
+        if dT < 1 then return 0 end
+        local l = math.floor(100*(1 - (d_idle / dT)))
+        if l < 0 then l = 0 end
+        self.l = l
+        return self.l
+    end
+
+    -- constructor code
+    local fd = io.open('/proc/uptime')
+    if fd == nil then return -1 end
+    local uptime, idle = fd:read("*n","*n")
+    fd:close()
+    self.u, self.i = tonumber(uptime), tonumber(idle)
+    print("uptime: constructor. Initial values:", self.u, self.i, self.l)
+    return self
+end
 
 -- Setup db_resty
 local db_resty = nixio.socket('unix', 'stream')
@@ -527,6 +561,9 @@ end
 -- Array of file descriptors for fan tacho files
 fan_tacho_fd = {}
 
+-- Uptime instance
+sysload = uptime()
+
 function fn_open_fanfiles()
     for i=1,8 do
         local file = nixio.open('/sys/class/hwmon/hwmon0/device/fan'..tostring(i)..'_input')
@@ -535,7 +572,7 @@ function fn_open_fanfiles()
 end
 
 -- Post current fans RPMs and put it to storage
-function fn_get_rpms()
+function fn_post_rpms()
     local rpm = {}
     local d = {}
     for i=1,8 do
@@ -552,7 +589,7 @@ function fn_get_rpms()
 end
 
 -- Post inlet temp
-function fn_get_inlet_temp()
+function fn_post_inlet_temp()
     local f = nixio.open(inlet_temp_file)
     if f == nil then return end
     local T = math.floor(tonumber(f:read(8)) / 1000)
@@ -561,12 +598,19 @@ function fn_get_inlet_temp()
 end
 
 -- Post board temp
-function fn_get_board_temp()
+function fn_post_board_temp()
     local f = nixio.open(board_temp_file)
     if f == nil then return end
     local T = math.floor(tonumber(f:read(8)) / 1000)
     f:close()
     db_resty:rawreq('','SELF/BOARD_TEMP',{ value = tonumber(T), duration=global_ttl },'POST')
+end
+
+-- Post system load
+function fn_post_sysload()
+    local load = sysload.get_value()
+    -- print("Sysload:"..load)
+    db_resty:rawreq('','SELF/sysload',{ value = tonumber(load), duration=global_ttl },'POST')
 end
 
 -- Post the name, version etc
@@ -582,9 +626,10 @@ fn_open_fanfiles()
 
 -- 5 seconds loop
 loop5s = uloop.timer(function()
-        fn_get_rpms()
-	fn_get_inlet_temp()
-	fn_get_board_temp()
+        fn_post_rpms()
+	fn_post_inlet_temp()
+	fn_post_board_temp()
+	fn_post_sysload()
         loop5s:set(5000)
 end,1)
 
