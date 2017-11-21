@@ -4,7 +4,7 @@
 # Every SleepTime seconds gets nodelist with types via API
 # If there is something new - restart PID
 # If the wrapper is killed - kill the PID either
-# 
+#
 
 # Get args from files
 CB=$(cat /etc/openrack-board | tr -s "-" " " | awk '{print $2}')
@@ -25,9 +25,9 @@ WGET_POST="/type"
 
 SEDSTR="s/.*type\":\([0-9]\).*/\1/p"
 
-RESTART_CMD="/bin/kill -9"
+KILL_CMD="/bin/kill -9"
 
-PIDCMD="/usr/sbin/pid3"
+PID_CMD="/usr/sbin/pid3"
 
 Nl_cur=(-1 -1 -1 -1 -1 -1)
 Nl_prev=(-1 -1 -1 -1 -1 -1)
@@ -54,28 +54,28 @@ trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 #   systemctl restart obmc-shaosid
 #fi
 
-# Start PID and get its' PID 
+# Start PID and get its' PID
 sleep ${RestartDelay}
-${PIDCMD} ${ARGS} & 
+${PID_CMD} ${ARGS} &
 PIDPID=$!
 
 # Circulate forever until death
-while [ 1 ]; do 
+while [ 1 ]; do
  # Copy cur to prev
- for  i in {1..6}; do 
+ for  i in {1..6}; do
    Nl_prev[${i}]=${Nl_cur[${i}]}
  done
- 
+
  # Get current state
  for node in {1..6}; do
-  WGET=${WGET_PRE}${node}${WGET_POST} 
+  WGET=${WGET_PRE}${node}${WGET_POST}
   APIRC=$(${WGET})
   NodeType=$(echo "${APIRC}" | sed -n ${SEDSTR})
- 
+
   if [ -z "$NodeType" ]; then
    NodeType=-1
   fi
-  
+
   Nl_cur[${node}]=${NodeType}
  done
 
@@ -86,31 +86,31 @@ while [ 1 ]; do
   continue
  fi
 
- # Check if PID is alive 
+ # Check if PID is alive
  if [ ! -d "/proc/${PIDPID}" ]; then
   sleep ${RestartDelay}
-  ${PIDCMD} ${ARGS} &
+  ${PID_CMD} ${ARGS} &
   PIDPID=$!
   continue
  fi
 
  # Compare arrays
  Changed=0
- for node in {1..6}; do 
+ for node in {1..6}; do
   if [ ${Nl_cur[$node]} != ${Nl_prev[$node]} ] && [ ${Nl_prev[$node]} == -1 ]; then
    Changed=1
-  fi 
+  fi
  done
 
  if [ ${Changed} == 1 ]; then
   # Do PID restart
-  ${RESTART_CMD} ${PIDPID} > /dev/null 2>&1
+  ${KILL_CMD} ${PIDPID} > /dev/null 2>&1
 
   sleep ${RestartDelay}
-  ${PIDCMD} ${ARGS} & 
+  ${PID_CMD} ${ARGS} &
   PIDPID=$!
  fi
 
- sleep ${SleepTime} 
+ sleep ${SleepTime}
 done
 
