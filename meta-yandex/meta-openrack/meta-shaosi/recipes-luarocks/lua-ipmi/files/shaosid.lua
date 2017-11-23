@@ -68,6 +68,24 @@ if f ~= nil then
     f:close()
 end
 
+-- Read MAC addresses
+local mac_eth0 = ''
+local mac_eth1 = ''
+local f = io.open('/sys/class/net/eth0/address')
+if f ~= nil then
+   for line in f:lines() do
+      mac_eth0 = line
+   end
+   f:close()
+end
+local f = io.open('/sys/class/net/eth1/address')
+if f ~= nil then
+   for line in f:lines() do
+      mac_eth1 = line
+   end
+   f:close()
+end
+
 -- Uptime class
 local function uptime()
 
@@ -619,6 +637,8 @@ function fn_post_selfinfo()
    db_resty:rawreq('','SELF/version', os_release,'POST')
    db_resty:rawreq('','SELF/number', board_number,'POST')
    db_resty:rawreq('','SELF/serial', serial,'POST')
+   db_resty:rawreq('','SELF/MAC/eth0', mac_eth0,'POST')
+   db_resty:rawreq('','SELF/MAC/eth1', mac_eth1,'POST')
 end
 
 fn_post_selfinfo()
