@@ -1,0 +1,10 @@
+[Unit]
+Description=Tobby daemon
+Requires=obmc-shaosid.service openresty.service
+[Service]
+Type=simple
+Restart=always
+RestartSec=0
+ExecStart=/usr/sbin/tobby
+[Install]
+WantedBy=network.target
