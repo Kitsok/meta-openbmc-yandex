@@ -17,9 +17,23 @@ do_install () {
     install -d ${D}${sbindir}
     install -m 0755 ${S}/tobby.lua ${D}${sbindir}/tobby
     install -d ${D}${datadir}/lua/5.1
-    install -m 0744 ${S}/table.lua ${D}${datadir}/lua/5.1/table.lua
     install -m 0744 ${S}/rack.lua ${D}${datadir}/lua/5.1/rack.lua
-    install -m 0744 ${S}/libtobby.lua ${D}${datadir}/lua/5.1/libtobby.lua
+}
+
+pkg_postinst_${PN} () {
+OPTS=""
+
+if [ -n "$D" ]; then
+    OPTS="--root=$D"
+fi
+
+if type systemctl >/dev/null 2>/dev/null; then
+        systemctl $OPTS enable obmc-tobby.service
+
+        if [ -z "$D" -a "enable" = "enable" ]; then
+                systemctl restart obmc-tobby.service
+        fi
+fi
 }
 
 FILES_${PN} += "${datadir}/lua/5.1/*.lua ${sbindir}/tobby ${systemd_unitdir}/system/obmc-tobby.service"
