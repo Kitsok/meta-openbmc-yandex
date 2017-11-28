@@ -3,7 +3,8 @@ LICENSE = "PD"
 LIC_FILES_CHKSUM = "file://main.cpp;beginline=1;endline=2;md5=ed0443b95075d48d7a632144acce0ac0"
 BB_STRICT_CHECKSUM = "0"
 
-SRC_URI = "git://github.yandex-team.ru/kitsok/pid3.git;branch=RND-614"
+#SRC_URI = "git://github.yandex-team.ru/kitsok/pid3.git;branch=RND-614"
+SRC_URI = "git://github.yandex-team.ru/kitsok/pid3.git"
 
 SRC_URI += "file://obmc-pid3.service"
 SRC_URI += "file://pid3_wrapper"
