@@ -8,7 +8,7 @@
 [Unit]
 Description=OpenBMC nodes monitor
 Conflicts=shutdown.target
-After=openresty.service systemd-networkd.service obmc-overlay.service
+After=openresty.service
 Requires=openresty.service
 [Service]
 ExecStart=/usr/sbin/shaosid

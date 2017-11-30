@@ -1,6 +1,7 @@
 [Unit]
 Description=PID3 daemon
-Requires=obmc-shaosid.service openresty.service
+After=obmc-shaosid.service
+Requires=obmc-shaosid.service
 [Service]
 Type=simple
 Restart=always
@@ -8,4 +9,4 @@ RestartSec=0
 ExecStart=/usr/sbin/pid3_wrapper
 ExecStopPost=/usr/sbin/safefans.sh || return 0
 [Install]
-WantedBy=network.target
+WantedBy=multi-user.target

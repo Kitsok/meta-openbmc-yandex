@@ -120,6 +120,7 @@ else
     systemctl disable obmc-tobby.service
     systemctl disable obmc-pmbuzzer.service
     systemctl daemon-reload
+    systemctl stop obmc-tobby.service obmc-pmbuzzer.service
 fi
 
 if [ "$old_name" != "$name" ]; then
