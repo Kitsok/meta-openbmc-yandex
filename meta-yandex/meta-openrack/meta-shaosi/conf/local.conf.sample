@@ -244,4 +244,4 @@ EXTRA_USERS_PARAMS = " \
   usermod -p '\$1\$UGMqyqdG\$FZiylVFmRRfl9Z0Ue8G7e/' root; \
   "
 
-IMAGE_INSTALL_append = " luajit luajit-common lmsensors-sensors strace tcpdump dtoverlay ethtool iproute2 vlan iperf bridge-utils pyphosphor iotools openrack openresty lua-ipmi lua-dbus opkg jfauth pid3 ipmitool scripts overlays lua-curl tobby"
+IMAGE_INSTALL_append = " luajit luajit-common lmsensors-sensors strace tcpdump dtoverlay ethtool iproute2 vlan iperf bridge-utils pyphosphor iotools openrack openresty lua-ipmi lua-dbus opkg jfauth pid3 ipmitool scripts overlays lua-curl tobby pmbuzzer"

@@ -1,0 +1,10 @@
+[Unit]
+Description=pmbuzzer daemon
+Requires=openresty.service
+[Service]
+Type=simple
+Restart=always
+RestartSec=0
+ExecStart=/usr/sbin/pmbuzzer
+[Install]
+WantedBy=network.target

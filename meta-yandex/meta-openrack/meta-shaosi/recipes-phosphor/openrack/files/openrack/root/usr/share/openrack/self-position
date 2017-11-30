@@ -112,12 +112,13 @@ fi
 if [ "$t" = "RMC" ]; then
     systemctl disable obmc-pid3.service
     systemctl enable obmc-tobby.service
+    systemctl enable obmc-pmbuzzer.service
     systemctl daemon-reload
     systemctl stop obmc-pid3.service
 else
-    systemctl disable obmc-tobby.service
     systemctl enable obmc-pid3.service
     systemctl disable obmc-tobby.service
+    systemctl disable obmc-pmbuzzer.service
     systemctl daemon-reload
 fi
 
