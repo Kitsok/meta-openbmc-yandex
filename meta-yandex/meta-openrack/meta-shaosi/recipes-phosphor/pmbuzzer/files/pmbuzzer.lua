@@ -21,7 +21,7 @@ end
 uloop.init()
 
 local db_resty = nixio.socket('unix', 'stream')
-if not db_resty:connect('/run/openresty/socket') then exit(-1) end
+if not db_resty:connect('/run/openresty/socket') then return -1 end
 getmetatable(db_resty).getfd = function(self) return tonumber(tostring(self):sub(13)) end
 getmetatable(db_resty).request = function(self, banknum, name, value, method)
     -- TODO: keep values in array and post it independetly in coroutine
