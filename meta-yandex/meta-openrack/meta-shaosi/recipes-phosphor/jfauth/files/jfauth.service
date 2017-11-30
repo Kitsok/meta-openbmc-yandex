@@ -5,7 +5,7 @@ After=network.target
 Type=forking
 Restart=always
 PIDFile=/run/jfauthd.pid
-ExecStart=/usr/sbin/jfauthd -d -u
+ExecStart=/usr/sbin/jfauthd -d -u --no-syslog
 [Install]
 WantedBy=multi-user.target
 
