@@ -112,5 +112,81 @@
 			};
 		};
 	};
+	fragment@4 {
+		target = <&i2c0>;
+		__overlay__ {
+			status = "okay";
+			bpbio: gpio-expander@18 {
+				compatible = "nxp,pca9675";
+				gpio-controller;
+				#gpio-cells = <2>;
+				reg = <0x18>;
+				lines-initial-states = <0x1>;
+			};
+			psumux@70 {
+				compatible = "nxp,pca9547";
+				#address-cells = <1>;
+				#size-cells = <0>;
+				reg = <0x70>;
+				reset-gpios = <&bpbio 0 GPIO_ACTIVE_LOW>;
+				i2c-mux-idle-disconnect = <0xff>;
+				shelf@0 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0>;
+					fru {
+						compatible = "atmel,24c02";
+						reg = <0x50>;
+					};
+				};
+				shelf@1 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <1>;
+					fru {
+						compatible = "atmel,24c02";
+						reg = <0x50>;
+					};
+				};
+				shelf@2 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <2>;
+					fru {
+						compatible = "atmel,24c02";
+						reg = <0x50>;
+					};
+				};
+				shelf@3 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <3>;
+					fru {
+						compatible = "atmel,24c02";
+						reg = <0x50>;
+					};
+				};
+				shelf@4 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <4>;
+					fru {
+						compatible = "atmel,24c02";
+						reg = <0x50>;
+					};
+				};
+				shelf@5 {
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <5>;
+					fru {
+						compatible = "atmel,24c02";
+						reg = <0x50>;
+					};
+				};
+
+			};
+		};
+	};
 
 };
