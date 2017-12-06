@@ -118,7 +118,9 @@ PREFIXPREFIX::cb:5    cb-5
 PREFIXPREFIX::cb:6    cb-6
 
 EOF
-	cat /tmp/hosts.tmpl | sed "s/PREFIXPREFIX/$1/g" > /etc/hosts
+	cat /tmp/hosts.tmpl | sed "s/PREFIXPREFIX/$1/g" > /tmp/hosts
+	rm -rf /etc/hosts /tmp/hosts.tmpl 2>&1 > /dev/null
+	ln -s /tmp/hosts /etc/hosts
 }
 
 make_netfile() {
