@@ -725,12 +725,15 @@ function _L._got_sdr_record(self, record)
 
     local name, size
 
-    if self._sdr_type == 2 then
+    if self._sdr_type == 2 and #record >= 37 then
          size = band(byte(record, 36), 0x1f)
          name = sub(record, 37, 36+size):upper()
-    else
-         size = band(byte(record, 52), 0x1f)
-         name = sub(record, 53, 52+size):upper()
+    else if self._sdr_type ~= 2 and #record >= 53 then
+              size = band(byte(record, 52), 0x1f)
+              name = sub(record, 53, 52+size):upper()
+	 else
+	      return false
+         end
     end
 
     if self._sdr_type ~= 0x01 and self._sdr_type ~= 0x02 and self._sdr_type ~= 0x04 and self._sdr_type ~= 0x08 and self._sdr_type ~= 0x0d then
