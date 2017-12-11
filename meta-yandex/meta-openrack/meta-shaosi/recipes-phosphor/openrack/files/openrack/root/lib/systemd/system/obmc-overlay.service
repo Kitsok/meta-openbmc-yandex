@@ -16,7 +16,7 @@ Before=sysinit.target
 ExecStart=-/usr/share/openrack/self-position --system-init
 Type=oneshot
 RemainAfterExit=No
-TimeoutSec=180
+TimeoutSec=200
 
 [Install]
 WantedBy=local-fs.target

@@ -183,6 +183,22 @@ else
     fi
 fi
 
+# wait for tmpfs is mounted
+cnt=0
+while [ true ]; do
+  rc=$(mount | grep tmpfs | grep "/tmp" > /dev/null 2>&1; echo $?)
+  if [ $rc == 0 ]; then
+	break
+  fi
+  cnt=$((cnt+1))
+  if [ $cnt == 30 ]; then
+     echo "self-position: Unable to wait further, giving up"
+     break
+  fi
+  echo "self-position: Waiting for tmpfs"
+  sleep 1
+done
+
 # Write serial number
 echo $serial > /tmp/board-serial
 
