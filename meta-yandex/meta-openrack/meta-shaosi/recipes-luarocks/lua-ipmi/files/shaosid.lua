@@ -425,7 +425,7 @@ function O_ipmi_del(devnum)
     db_resty:request(devnum, 'ipv6', nil, 'DELETE')
     db_resty:request(devnum, 'PWRSTATE', nil, 'DELETE')
     db_resty:request(devnum, 'mac/ipmi', nil, 'DELETE')
-    for i=1,3 do
+    for i=0,3 do
         db_resty:request(devnum, string.format('mac/eth%d', i), nil, 'DELETE')
     end
     oip:close()
