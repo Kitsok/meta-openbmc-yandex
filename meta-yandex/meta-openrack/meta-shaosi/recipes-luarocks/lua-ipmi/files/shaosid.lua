@@ -15,7 +15,7 @@ local byte = string.byte
 local band, bxor = bit.band, bit.bxor
 
 -- global TTL of self data
-local global_ttl = 60
+local global_ttl = 20
 
 -- board type, number, etc vars
 local board_type = ''
@@ -208,19 +208,19 @@ local L_ipmi_scope = 'eth1'
 local O_ipmi_sdrs = {}
 local L_ipmi_sdrs = {
   -- pattern | round | ttl | *replace pattern
-  {'CPU[0-9]_TEMP', 1, 60.0},
-  {'NVME_([0-9])_TEMP', 2, 60.0},
-  {'SATA[0-9]+_TEMP', 2, 60.0},
-  {'SIO_TEMP_[0-9]', 2, 60.0},
-  {'BP[12]_HDD_TEMP[12]', 2, 60.0},
-  {'.+_TEMP', 2, 60.0},
-  {'SYS_PWR', 1, 60.0},
-  {'P12V', 2, 60.0},
-  {'SATA[0-9]+_STAT', 2, 60.0},
-  {'P0N[01]_STAT', 2, 60.0},
-  {'SATA[0-9]+_P1N[01]_STAT', 2, 60.0},
-  {'Inlet_Temp', 2, 60.0 },
-  {'EXP_Board_TEMP', 2, 60.0},
+  {'CPU[0-9]_TEMP', 1, 20.0},
+  {'NVME_([0-9])_TEMP', 2, 20.0},
+  {'SATA[0-9]+_TEMP', 2, 20.0},
+  {'SIO_TEMP_[0-9]', 2, 20.0},
+  {'BP[12]_HDD_TEMP[12]', 2, 20.0},
+  {'.+_TEMP', 2, 20.0},
+  {'SYS_PWR', 1, 20.0},
+  {'P12V', 2, 20.0},
+  {'SATA[0-9]+_STAT', 2, 20.0},
+  {'P0N[01]_STAT', 2, 20.0},
+  {'SATA[0-9]+_P1N[01]_STAT', 2, 20.0},
+  {'Inlet_Temp', 2, 20.0 },
+  {'EXP_Board_TEMP', 2, 20.0},
 
 }
 
