@@ -48,7 +48,7 @@ do_generate_flash_append() {
     rm -rf ${ddir}/${tar_appkern}* > /dev/null 2>&1 || return 0
     rm -rf ${ddir}/${tar_full}* > /dev/null 2>&1 || return 0
     tar -h -cvf ${ddir}/${tar_appkern} -C ${ddir} image-kernel image-initramfs image-rofs CHANGELOG
-    tar -h -cvf ${ddir}/${tar_full} -C ${ddir} image-kernel image-initramfs image-rofs image-rwfs image-u-boot CHANGELOG
+    tar -h -cvf ${ddir}/${tar_full} -C ${ddir} image-kernel image-initramfs image-rofs image-rwfs CHANGELOG
     tar -h -cvf ${ddir}/${tar_fullflash} -C ${ddir} ${FLASH_IMAGE_NAME}
     gzip ${ddir}/${tar_appkern}
     gzip ${ddir}/${tar_full}
