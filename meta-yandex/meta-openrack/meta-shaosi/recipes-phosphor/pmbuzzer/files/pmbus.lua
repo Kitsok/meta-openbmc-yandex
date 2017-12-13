@@ -744,10 +744,11 @@ function _M.pmbus_reg2data_linear(self, data, sensor)
         val = val * 1000
     end
 
-    -- scale result to micro-units for power sensors
-    if sensor.class == classes.PSC_POWER then
-        val = val * 1000
-    end
+    -- Dont do it as the result will not fit into S32
+--  -- scale result to micro-units for power sensors
+--  if sensor.class == classes.PSC_POWER then
+--      val = val * 1000
+--  end
 
     if exponent >= 0 then
         val = lshift(val, exponent)
