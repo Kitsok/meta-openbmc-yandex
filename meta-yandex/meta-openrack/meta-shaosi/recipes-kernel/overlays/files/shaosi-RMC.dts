@@ -18,10 +18,11 @@
 		target = <&mac1>;
 		__overlay__ {
 			status = "okay";
+			compatible = "faraday,ftgmac100", "aspeed,ast2400-mac";
 
 			no-hw-checksum;
 			phy-handle = <&phy1>;
-			phy-mode = "rgmii";
+			phy-mode = "rmii";
 			pinctrl-names = "default";
 			pinctrl-0 = <&pinctrl_rgmii2_default &pinctrl_mdio2_default>;
 

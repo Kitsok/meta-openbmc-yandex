@@ -47,6 +47,7 @@ do_generate_flash_append() {
     tar_fullflash="openbmc-0.1.0-${ver_yandex}-fullflash.tar"
     rm -rf ${ddir}/${tar_appkern}* > /dev/null 2>&1 || return 0
     rm -rf ${ddir}/${tar_full}* > /dev/null 2>&1 || return 0
+    rm -rf ${ddir}/${tar_fullflash}* > /dev/null 2>&1 || return 0
     tar -h -cvf ${ddir}/${tar_appkern} -C ${ddir} image-kernel image-initramfs image-rofs CHANGELOG
     tar -h -cvf ${ddir}/${tar_full} -C ${ddir} image-kernel image-initramfs image-rofs image-rwfs CHANGELOG
     tar -h -cvf ${ddir}/${tar_fullflash} -C ${ddir} ${FLASH_IMAGE_NAME}

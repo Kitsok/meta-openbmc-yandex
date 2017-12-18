@@ -74,6 +74,7 @@
 
 &mac0 {
 	status = "okay";
+	compatible = "faraday,ftgmac100", "aspeed,ast2400-mac";
 
 	no-hw-checksum;
 
