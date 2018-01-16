@@ -1,6 +1,13 @@
 #!/bin/bash
 # Get CPU0_TEMP of all nodes
 
-for i in {1..6}; do wget -q -O 1 http://127.0.0.1/api/storage/CB-6/$i/CPU0_TEMP > /dev/null; cat 1; echo; done
+cb_num=$(cat /etc/openrack-board)
+sensor="CPU0_TEMP"
+
+if [[ ! -z $1 ]] ; then
+	sensor=$1
+fi
+for i in {1..6}; do wget -q -O 1 http://127.0.0.1/api/storage/${cb_num}/${i}/${sensor} > /dev/null; cat 1; echo; done
+
 rm 1
 exit 0
