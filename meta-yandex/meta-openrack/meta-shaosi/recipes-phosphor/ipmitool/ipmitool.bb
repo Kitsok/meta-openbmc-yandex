@@ -6,6 +6,7 @@ PR = "r1"
 
 inherit obmc-phosphor-license
 
+DEPENDS += "openssl systemd "
 RDEPENDS_${PN} += "libcrypto systemd "
 
 

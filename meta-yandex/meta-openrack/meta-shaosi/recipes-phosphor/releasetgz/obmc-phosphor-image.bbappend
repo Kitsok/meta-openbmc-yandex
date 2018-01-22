@@ -12,11 +12,11 @@ RWFS_SIZE ?= "4096"
 
 do_generate_flash_append() {
 
-    pushd .
+    cur=$(pwd)
     cd ${LAYER_DIR}
     ver_yandex=$(git describe --tags || return 0)
     git log --date=local --pretty=format:%cd--%h--%s > ${ddir}/CHANGELOG
-    popd
+    cd $cur
 
     dtb="zImage-${KERNEL_DEVICETREE}"
     dtbkernel="dtbkernel-${MACHINE}-${DATETIME}"
